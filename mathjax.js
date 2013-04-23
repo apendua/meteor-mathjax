@@ -1,4 +1,7 @@
 
+//TODO: let the user change the source
+//TODO: give the user access to the handler,
+//      so that they can alter its behavior
 var MathJaxHandler = {
   // required by module loader
   source : 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
@@ -29,6 +32,7 @@ Template.mathjax.rendered = function () {
   MathJaxHandler.ready(function (MathJax) {
     var nodes = [];
     try {
+      //TODO: restrict to user-defined class
       nodes = self.findAll('*');
     } catch (err) { // node not in DOM? ignore
       return err;
