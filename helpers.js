@@ -1,7 +1,7 @@
 
 Handlebars.registerHelper('mathjax', function (options) {
   var self = this;
-  var template = Template._mathjax;
+  var template = Template.mathjax;
   if (!template)
     // fallback solution
     return new Handlebars.SafeString(options.fn(self));
