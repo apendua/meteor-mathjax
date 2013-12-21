@@ -1,11 +1,10 @@
-
 Package.describe({
     summary: "Render math formulas with mathjax",
 });
 
 Package.on_use(function (api) {
     //TODO: remove underscore dependency?
-    api.use(['templating', 'underscore', 'module-loader'], 'client');
+    api.use(['templating', 'underscore', 'module-loader', 'handlebars'], 'client');
 
     // HTML templates
     api.add_files('mathjax.html', 'client');
