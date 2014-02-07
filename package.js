@@ -11,5 +11,4 @@ Package.on_use(function (api) {
 
     // JS code
     api.add_files('mathjax.js', 'client');
-    api.add_files('helpers.js', 'client');
 });

@@ -21,12 +21,6 @@ var MathJaxHandler = {
 
 ModuleLoader.define('mathjax', MathJaxHandler);
 
-Template.mathjax.renderContent = function () {
-  var options = this.options;
-  if (options && _.isFunction(options.fn))
-    return new Handlebars.SafeString(options.fn(this.context));
-};
-
 Template.mathjax.rendered = function () {
   var self = this;
   MathJaxHandler.ready(function (MathJax) {
