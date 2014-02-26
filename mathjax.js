@@ -21,21 +21,39 @@ var MathJaxHandler = {
 
 ModuleLoader.define('mathjax', MathJaxHandler);
 
-Template.mathjax.rendered = function () {
-  var self = this;
-  MathJaxHandler.ready(function (MathJax) {
-    var nodes = [];
-    try {
-      //TODO: restrict to user-defined class
-      nodes = self.findAll('*');
-    } catch (err) { // node not in DOM? ignore
-      return err;
-    }
-    // we don't want to wait untill
-    // everything is rendered
-    Meteor.defer(function () {
-      MathJax.Hub.Queue(["Typeset", MathJax.Hub, nodes]);
-    });
-  });
-};
+Handlebars.registerHelper('mathjax', function (options) {
+  
+  var dependency = new Deps.Dependency();
 
+  var component = UI.block(function () {
+    var self = this;
+    return function () {
+      UI.toRawText(self.__content, self); // this triggers reactivity
+      dependency.changed();
+      //return HTML.Raw(text);
+      return self.__content;
+    };
+  });
+
+  component.rendered = function () {
+    var self = this;
+    MathJaxHandler.ready(function (MathJax) {
+      Deps.autorun(function () {
+        var nodes = [];
+        try {
+          nodes = self.findAll('*');
+        } catch (err) { // node not in DOM? ignore
+          return err;
+        }
+        dependency.depend();
+        // we don't want to wait untill
+        // everything is rendered
+        Meteor.defer(function () {
+          MathJax.Hub.Queue(["Typeset", MathJax.Hub, nodes]);
+        });
+      });
+    });
+  }
+
+  return component;
+});
