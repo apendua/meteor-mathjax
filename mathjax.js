@@ -10,6 +10,7 @@ var MathJaxHandler = {
   },
   loaded : function (MathJax) {
     MathJax.Hub.Config({
+      skipStartupTypeset: true,
       showProcessingMessages: false,
       tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] }
     });
@@ -22,38 +23,34 @@ var MathJaxHandler = {
 ModuleLoader.define('mathjax', MathJaxHandler);
 
 Handlebars.registerHelper('mathjax', function (options) {
-  
-  var dependency = new Deps.Dependency();
+  var dependency = new Deps.Dependency(),
+      content    = '';
 
-  var component = UI.block(function () {
-    var self = this;
-    return function () {
-      UI.toRawText(self.__content, self); // this triggers reactivity
-      dependency.changed();
-      //return HTML.Raw(text);
-      return self.__content;
-    };
-  });
-
-  component.rendered = function () {
-    var self = this;
-    MathJaxHandler.ready(function (MathJax) {
-      Deps.autorun(function () {
-        var nodes = [];
-        try {
-          nodes = self.findAll('*');
-        } catch (err) { // node not in DOM? ignore
-          return err;
-        }
+  return UI.Component.extend({
+    parented: function () {
+      var self = this;
+      self.mathjax = Deps.autorun(function () {
         dependency.depend();
-        // we don't want to wait untill
-        // everything is rendered
-        Meteor.defer(function () {
-          MathJax.Hub.Queue(["Typeset", MathJax.Hub, nodes]);
+        MathJaxHandler.ready(function (MathJax) {
+          $(self.firstNode).nextAll().each(function () {
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, this]);
+          });
         });
       });
-    });
-  }
-
-  return component;
+    },
+    render: function () {
+      var self = this;
+      return function () {
+        var rendered = UI.toRawText(self.__content, self); // this triggers reactivity
+        if (rendered !== content) {
+          content = rendered;
+          dependency.changed();
+        }
+        return self.__content;
+      };
+    },
+    destroyed: function () {
+      this.mathjax.stop();
+    },
+  });
 });
