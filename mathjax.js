@@ -23,12 +23,13 @@ var MathJaxHandler = {
 ModuleLoader.define('mathjax', MathJaxHandler);
 
 Handlebars.registerHelper('mathjax', function (options) {
-  var dependency = new Deps.Dependency();
+  var dependency = new Deps.Dependency(),
+      handle     = null;
 
   return UI.Component.extend({
-    parented: function () {
+    rendered: function () {
       var self = this;
-      self.mathjax = Deps.autorun(function () {
+      handle = Deps.autorun(function () {
         dependency.depend();
         MathJaxHandler.ready(function (MathJax) {
           Meteor.defer(function () {
@@ -48,7 +49,7 @@ Handlebars.registerHelper('mathjax', function (options) {
       };
     },
     destroyed: function () {
-      this.mathjax.stop();
+      handle && handle.stop();
     },
   });
 });
