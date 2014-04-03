@@ -22,9 +22,17 @@ var MathJaxHandler = {
 
 ModuleLoader.define('mathjax', MathJaxHandler);
 
-Handlebars.registerHelper('mathjax', function (options) {
+Handlebars.registerHelper('mathjax', function () {
   var dependency = new Deps.Dependency(),
-      handle     = null;
+      handle     = null,
+      options    = this,
+      wait       = options.wait !== undefined ? options.wait : false;
+
+  var update = function (firstNode) {
+    $(firstNode).nextAll().each(function () {
+      MathJax.Hub.Queue(["Typeset", MathJax.Hub, this]);
+    });
+  }
 
   return UI.Component.extend({
     rendered: function () {
@@ -32,11 +40,11 @@ Handlebars.registerHelper('mathjax', function (options) {
       handle = Deps.autorun(function () {
         dependency.depend();
         MathJaxHandler.ready(function (MathJax) {
-          Meteor.defer(function () {
-            $(self.firstNode).nextAll().each(function () {
-              MathJax.Hub.Queue(["Typeset", MathJax.Hub, this]);
-            });
-          });
+          if (!wait) {
+            Meteor.defer(function () { update(self.firstNode) });
+          } else {
+            update(self.firstNode);
+          }
         });
       });
     },
