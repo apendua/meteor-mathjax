@@ -4,6 +4,7 @@
 //      so that they can alter its behavior
 var MathJaxHandler = {
   // required by module loader
+  // source : 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG',
   source : 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
   verify : function () {
     return window.MathJax;
