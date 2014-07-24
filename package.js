@@ -4,11 +4,6 @@ Package.describe({
 
 Package.on_use(function (api) {
     //TODO: remove underscore dependency?
-    api.use(['templating', 'underscore', 'module-loader', 'handlebars'], 'client');
-
-    // HTML templates
-    api.add_files('mathjax.html', 'client');
-
-    // JS code
+    api.use(['underscore', 'module-loader', 'ui'], 'client');
     api.add_files('mathjax.js', 'client');
 });
