@@ -1,0 +1,20 @@
+{
+  "meteor": {},
+  "dependencies": {
+    "basePackages": {
+      "mathjax": {
+        "path": ".."
+      }
+    },
+    "packages": {
+      "mathjax": {
+        "path": ".."
+      },
+      "module-loader": {
+        "git": "https://github.com/apendua/module-loader.git",
+        "tag": "v0.5.1",
+        "commit": "06c4f220272fb10dadec3ff431a47ce58e84cc8f"
+      }
+    }
+  }
+}
