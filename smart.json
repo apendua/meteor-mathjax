@@ -3,7 +3,7 @@
     "description": "Render math formulas with mathjax",
     "homepage": "https://github.com/apendua/meteor-mathjax",
     "author": "Tomasz Lenarcik",
-    "version": "0.5.0.1",
+    "version": "0.5.1",
     "git": "https://github.com/apendua/meteor-mathjax.git",
     "packages": {
       "module-loader" : {}
