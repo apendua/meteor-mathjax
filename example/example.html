@@ -9,7 +9,7 @@
 <template name="hello">
   <h1>Hello MathJax!</h1>
   <input type="button" value="Change equation" />
-  {{#mathjax}}
+  {{#mathjax wait=true}}
     <p>{{equation}}</p>
   {{/mathjax}}
 </template>

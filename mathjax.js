@@ -38,31 +38,32 @@ UI.registerHelper('mathjax', function () {
       //return this !== lastNode;
     });
   }
+  
+  return Template.__create__('mathjax', function () { // render func
+    var view = this, conent = '';
+    
+    if (view.templateContentBlock) {
+      // this will cause rerender every time the content changes
+      content = Blaze.toText(view.templateContentBlock, HTML.TEXTMODE.STRING);
+    }
 
-  return UI.Component.extend({
-    rendered: function () {
-      var self = this;
-      handle = Deps.autorun(function () {
+    return view.templateContentBlock;
+  }, function (view) { // init view
+
+    view.onRendered(function () {
+      view.autorun(function () {
         dependency.depend();
+        //---------------------------------------
         MathJaxHandler.ready(function (MathJax) {
           if (!wait) {
-            Meteor.defer(function () { update(self.firstNode, self.lastNode) });
+            Meteor.defer(function () { update(view.domrange.firstNode(), view.domrange.lastNode()) });
           } else {
-            update(self.firstNode, self.lastNode);
+            update(view.domrange.firstNode(), view.domrange.lastNode());
           }
         });
-      });
-    },
-    render: function () {
-      var self = this;
-      return function () {
-        UI.toRawText(self.__content, self); // this triggers reactivity
-        dependency.changed();
-        return self.__content;
-      };
-    },
-    destroyed: function () {
-      handle && handle.stop();
-    },
+      }); // autorun
+    }); // onRendered
+
   });
+
 });
