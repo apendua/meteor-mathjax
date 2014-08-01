@@ -1,5 +1,5 @@
 <head>
-  <title>example</title>
+  <title>MathJax</title>
 </head>
 
 <body>
@@ -7,11 +7,9 @@
 </body>
 
 <template name="hello">
-  <h1>Hello World!</h1>
+  <h1>Hello MathJax!</h1>
+  <input type="button" value="Change equation" />
   {{#mathjax}}
-    <p>
-      $$\frac{x^2+y^2}{z^2}=1$$
-    </p>
+    <p>{{equation}}</p>
   {{/mathjax}}
-  <input type="button" value="Click" />
 </template>
