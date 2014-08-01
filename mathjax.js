@@ -25,34 +25,35 @@ ModuleLoader.define('mathjax', MathJaxHandler);
 
 UI.registerHelper('mathjax', function () {
   var dependency = new Deps.Dependency(),
-      handle     = null,
-      options    = this,
-      wait       = options.wait !== undefined ? options.wait : false;
+      options = this,
+      wait = options.wait !== undefined ? options.wait : false;
 
   var update = function (firstNode, lastNode) {
-    $(firstNode).nextAll().andSelf().each(function () {
-      // XXX we are not supporting text nodes for now
-      if (this.nodeType === 1) {
+    var alreadyThere = false;
+    $(firstNode).parent().contents().each(function (index, node) {
+      // TODO add support for text nodes
+      if (node === firstNode) {
+        alreadyThere = true;
+      }
+      if (alreadyThere && this.nodeType === 1) {
         MathJax.Hub.Queue(["Typeset", MathJax.Hub, this]);
       }
-      //return this !== lastNode;
+      return this !== lastNode;
     });
   }
-  
+
   return Template.__create__('mathjax', function () { // render func
     var view = this, conent = '';
-    
     if (view.templateContentBlock) {
-      // this will cause rerender every time the content changes
+      // this will trigger rerender every time the content is changed
       content = Blaze.toText(view.templateContentBlock, HTML.TEXTMODE.STRING);
     }
-
     return view.templateContentBlock;
   }, function (view) { // init view
-
     view.onRendered(function () {
       view.autorun(function () {
         dependency.depend();
+        console.log(view.domrange.firstNode);
         //---------------------------------------
         MathJaxHandler.ready(function (MathJax) {
           if (!wait) {
@@ -60,7 +61,7 @@ UI.registerHelper('mathjax', function () {
           } else {
             update(view.domrange.firstNode(), view.domrange.lastNode());
           }
-        });
+        }); // ready
       }); // autorun
     }); // onRendered
 
