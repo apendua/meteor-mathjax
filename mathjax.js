@@ -25,44 +25,46 @@ ModuleLoader.define('mathjax', MathJaxHandler);
 
 UI.registerHelper('mathjax', function () {
   var dependency = new Deps.Dependency(),
-      handle     = null,
-      options    = this,
-      wait       = options.wait !== undefined ? options.wait : false;
+      options = this,
+      wait = options.wait !== undefined ? options.wait : false;
 
   var update = function (firstNode, lastNode) {
-    $(firstNode).nextAll().andSelf().each(function () {
-      // XXX we are not supporting text nodes for now
-      if (this.nodeType === 1) {
+    var alreadyThere = false;
+    $(firstNode).parent().contents().each(function (index, node) {
+      // TODO add support for text nodes
+      if (node === firstNode) {
+        alreadyThere = true;
+      }
+      if (alreadyThere && this.nodeType === 1) {
         MathJax.Hub.Queue(["Typeset", MathJax.Hub, this]);
       }
-      //return this !== lastNode;
+      return this !== lastNode;
     });
   }
 
-  return UI.Component.extend({
-    rendered: function () {
-      var self = this;
-      handle = Deps.autorun(function () {
+  return Template.__create__('mathjax', function () { // render func
+    var view = this, conent = '';
+    if (view.templateContentBlock) {
+      // this will trigger rerender every time the content is changed
+      content = Blaze.toText(view.templateContentBlock, HTML.TEXTMODE.STRING);
+    }
+    return view.templateContentBlock;
+  }, function (view) { // init view
+    view.onRendered(function () {
+      view.autorun(function () {
         dependency.depend();
+        console.log(view.domrange.firstNode);
+        //---------------------------------------
         MathJaxHandler.ready(function (MathJax) {
           if (!wait) {
-            Meteor.defer(function () { update(self.firstNode, self.lastNode) });
+            Meteor.defer(function () { update(view.domrange.firstNode(), view.domrange.lastNode()) });
           } else {
-            update(self.firstNode, self.lastNode);
+            update(view.domrange.firstNode(), view.domrange.lastNode());
           }
-        });
-      });
-    },
-    render: function () {
-      var self = this;
-      return function () {
-        UI.toRawText(self.__content, self); // this triggers reactivity
-        dependency.changed();
-        return self.__content;
-      };
-    },
-    destroyed: function () {
-      handle && handle.stop();
-    },
+        }); // ready
+      }); // autorun
+    }); // onRendered
+
   });
+
 });
