@@ -1,7 +1,7 @@
 meteor-mathjax
 ==============
 
-The package provides a handlebars helper that enables rendering mathematical formulas with [mathjax](http://www.mathjax.org/). Currently, the `mathjax` source code is loaded from cloud as soon as the first formula is being rendered. This is done with a help of a very simple [module-loader](https://github.com/apendua/module-loader) tool.
+The package provides a handlebars helper that enables rendering mathematical formulas with [mathjax](http://www.mathjax.org/). Currently, the `mathjax` source code is loaded from cloud as soon as the first formula is being rendered.
 
 An example use of `mathjax` in a template may look like this:
 ```html
