@@ -1,9 +1,12 @@
 Package.describe({
-    summary: "Render math formulas with mathjax",
+  summary: "Render math formulas with mathjax",
+  varsion: "0.5.2",
+  name: "apendua:mathjax",
+  git: "https://github.com/apendua/meteor-mathjax.git"
 });
 
-Package.on_use(function (api) {
-    //TODO: remove underscore dependency?
-    api.use(['underscore', 'module-loader', 'ui', 'templating'], 'client');
-    api.add_files('mathjax.js', 'client');
+Package.onUse(function (api) {
+  api.versionsFrom('0.9.0');
+  api.use(['ui', 'templating'], 'client');
+  api.addFiles('mathjax.js', 'client');
 });
