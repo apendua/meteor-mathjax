@@ -1,28 +1,4 @@
 
-//TODO: let the user change the source
-//TODO: give the user access to the handler,
-//      so that they can alter its behavior
-var MathJaxHandler = {
-  // required by module loader
-  // source : 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG',
-  source : 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
-  verify : function () {
-    return window.MathJax;
-  },
-  loaded : function (MathJax) {
-    MathJax.Hub.Config({
-      skipStartupTypeset: true,
-      showProcessingMessages: false,
-      tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] }
-    });
-  },
-  ready: function (action) {
-    return ModuleLoader.ready('mathjax', action);
-  },
-};
-
-ModuleLoader.define('mathjax', MathJaxHandler);
-
 UI.registerHelper('mathjax', function () {
   var dependency = new Deps.Dependency(),
       options = this,
@@ -53,9 +29,8 @@ UI.registerHelper('mathjax', function () {
     view.onRendered(function () {
       view.autorun(function () {
         dependency.depend();
-        console.log(view.domrange.firstNode);
-        //---------------------------------------
-        MathJaxHandler.ready(function (MathJax) {
+        //---------------------------------
+        onMathJaxReady(function (MathJax) {
           if (!wait) {
             Meteor.defer(function () { update(view.domrange.firstNode(), view.domrange.lastNode()) });
           } else {
@@ -64,7 +39,31 @@ UI.registerHelper('mathjax', function () {
         }); // ready
       }); // autorun
     }); // onRendered
-
   });
-
 });
+
+// loading MathJax
+
+function onMathJaxReady(callback) {
+  if (window.MathJax) {
+    callback(window.MathJax);
+  } else {
+    if (!onMathJaxReady.listeners) {
+      $.getScript( // TODO: let the user change the source
+        'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
+      ).done(function () {
+        //------------------
+        MathJax.Hub.Config({
+          skipStartupTypeset: true,
+          showProcessingMessages: false,
+          tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] }
+        });
+        //-------------------------------------------------------------------------------------------------------
+        while (onMathJaxReady.listeners.length > 0) { onMathJaxReady.listeners.pop().call(null, window.MathJax) }
+      });
+      onMathJaxReady.listeners = [];
+    }
+    onMathJaxReady.listeners.push(callback);
+  }
+}
+
