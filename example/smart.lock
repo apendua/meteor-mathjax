@@ -2,12 +2,12 @@
   "meteor": {},
   "dependencies": {
     "basePackages": {
-      "apendua:mathjax": {
+      "mrt:mathjax": {
         "path": ".."
       }
     },
     "packages": {
-      "apendua:mathjax": {
+      "mrt:mathjax": {
         "path": ".."
       }
     }

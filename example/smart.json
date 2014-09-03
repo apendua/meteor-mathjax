@@ -1,6 +1,6 @@
 {
   "packages": {
-    "apendua:mathjax": {
+    "mrt:mathjax": {
       "path": ".."
     }
   }

@@ -1,9 +1,0 @@
-{
-    "name": "mathjax",
-    "description": "Render math formulas with mathjax",
-    "homepage": "https://github.com/apendua/meteor-mathjax",
-    "author": "Tomasz Lenarcik",
-    "version": "0.5.2",
-    "git": "https://github.com/apendua/meteor-mathjax.git",
-    "packages": {}
-}
