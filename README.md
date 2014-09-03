@@ -1,3 +1,8 @@
+# Notes for Meteor 0.9.x
+
+The correct name of this package is currently `mrt:mathjax`,
+but it will probably change in the future.
+
 meteor-mathjax
 ==============
 
