@@ -1,7 +1,6 @@
 
-UI.registerHelper('mathjax', function () {
-  var dependency = new Deps.Dependency(),
-      options = this,
+Template.registerHelper('mathjax', function () {
+  var options = this,
       wait = options.wait !== undefined ? options.wait : false;
 
   var update = function (firstNode, lastNode) {
@@ -17,29 +16,29 @@ UI.registerHelper('mathjax', function () {
       return this !== lastNode;
     });
   }
-
-  return Template.__create__('mathjax', function () { // render func
+  
+  var mathjax = new Template('mathjax', function () { // render func
     var view = this, conent = '';
     if (view.templateContentBlock) {
       // this will trigger rerender every time the content is changed
-      content = Blaze.toText(view.templateContentBlock, HTML.TEXTMODE.STRING);
+      content = Blaze._toText(view.templateContentBlock, HTML.TEXTMODE.STRING);
     }
     return view.templateContentBlock;
-  }, function (view) { // init view
-    view.onRendered(function () {
-      view.autorun(function () {
-        dependency.depend();
-        //---------------------------------
-        onMathJaxReady(function (MathJax) {
-          if (!wait) {
-            Meteor.defer(function () { update(view.domrange.firstNode(), view.domrange.lastNode()) });
-          } else {
-            update(view.domrange.firstNode(), view.domrange.lastNode());
-          }
-        }); // ready
-      }); // autorun
-    }); // onRendered
   });
+
+  mathjax.rendered = function () {
+    var self = this;
+    //---------------------------------
+    onMathJaxReady(function (MathJax) {
+      if (!wait) {
+        Meteor.defer(function () { update(self.firstNode, self.lastNode); });
+      } else {
+        update(self.firstNode, self.lastNode);
+      }
+    }); // ready
+  };
+
+  return mathjax;
 });
 
 // loading MathJax
