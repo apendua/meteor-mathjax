@@ -9,9 +9,12 @@
 <template name="hello">
   <h1>Hello MathJax!</h1>
   <input type="button" value="Change equation" />
-  {{#mathjax wait=true}}
-    <p>{{equation}}</p>
-  {{/mathjax}}
+  {{#with myEquation="$$x^2+y^2=z^2$$"}}
+    {{#mathjax wait=true}}
+      <p>{{myEquation}}</p>
+      <p>{{equation}}</p>
+    {{/mathjax}}
+  {{/with}}
   <h2> ... and before applying MathJax</h2>
   <code>{{equation}}</code>
 </template>

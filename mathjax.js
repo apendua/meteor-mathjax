@@ -15,18 +15,18 @@ Template.registerHelper('mathjax', function () {
       }
       return this !== lastNode;
     });
-  }
+  };
   
-  var mathjax = new Template('mathjax', function () { // render func
+  var mathjax = new Template('mathjax', function () {
     var view = this, conent = '';
     if (view.templateContentBlock) {
-      // this will trigger rerender every time the content is changed
-      content = Blaze._toText(view.templateContentBlock, HTML.TEXTMODE.STRING);
+      content = HTML.toText(Blaze._expandView(Blaze._TemplateWith(Template.parentData(),
+        view.templateContentBlock.renderFunction)), HTML.TEXTMODE.STRING);
     }
-    return view.templateContentBlock;
+    return HTML.Raw(content);
   });
 
-  mathjax.rendered = function () {
+  mathjax.onRendered(function () {
     var self = this;
     //---------------------------------
     onMathJaxReady(function (MathJax) {
@@ -36,7 +36,7 @@ Template.registerHelper('mathjax', function () {
         update(self.firstNode, self.lastNode);
       }
     }); // ready
-  };
+  });
 
   return mathjax;
 });
