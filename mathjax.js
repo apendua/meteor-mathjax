@@ -1,4 +1,6 @@
 
+var cache = {};
+
 Template.registerHelper('mathjax', function () {
   var options = this,
       wait = options.wait !== undefined ? options.wait : false;
@@ -7,11 +9,19 @@ Template.registerHelper('mathjax', function () {
     var alreadyThere = false;
     $(firstNode).parent().contents().each(function (index, node) {
       // TODO add support for text nodes
+      var cacheKey;
       if (node === firstNode) {
         alreadyThere = true;
       }
       if (alreadyThere && this.nodeType === 1) {
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub, this]);
+        cacheKey = node.innerHTML;
+        if (cache[cacheKey]) {
+          node.innerHTML = cache[cacheKey];
+        } else {
+          MathJax.Hub.Queue(["Typeset", MathJax.Hub, this], function () {
+            cache[cacheKey] = node.innerHTML;
+          });
+        }
       }
       return this !== lastNode;
     });
