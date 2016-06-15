@@ -69,7 +69,7 @@ MeteorMathJax = {
 function MathJaxHelper (options) {
   this.cache = {};
   this.options = {
-    useCache: options.useCache !== undefined ? options.useCache : true,
+    useCache: options && options.useCache !== undefined ? options.useCache : true,
   };
 }
 
@@ -131,4 +131,9 @@ MathJaxHelper.prototype.getTemplate = function getTemplate () {
 
   return template;
 };
+
+/**
+ * Register the mathjax helper in the default form.
+ */
+Template.registerHelper('mathjax', new MathJaxHelper().getTemplate());
 
