@@ -9,12 +9,21 @@ MeteorMathJax = {
    * Notify all listeners that the MathJax script has been loaded.
    */
   ready : function () {
-    if (!window.MathJax || !window.MathJax.Hub || typeof window.MathJax.Hub.Configured !== 'function') {
-      throw new Error('Cannot call MeteorMathJax.ready() before MathJax is really loaded.');
+    var MathJax = window.MathJax;
+    function triggerListeners () {
+      while (listeners.length > 0) {
+        listeners.pop().call(null, MathJax);
+      }
     }
-    // trigger all listeners
-    while (listeners.length > 0) {
-      listeners.pop().call(null, window.MathJax);
+    if (MathJax && MathJax.Hub && MathJax.Hub.queue) {
+      truggerListeners();
+    } else if (MathJax && MathJax.Hub && MathJax.Hub.Register && typeof MathJax.Hub.Register.StartupHook === 'function') {
+      // NOTE: Make sure further tasks are scheduled after MathJax is fully configured and operational.
+      MathJax.Hub.Register.StartupHook("Begin", function () {
+        triggerListeners();
+      });
+    } else {
+      throw new Error('Cannot call MeteorMathJax.ready() before MathJax is really loaded.');
     }
   },
   /**
@@ -22,36 +31,41 @@ MeteorMathJax = {
    * @param {Function} callback
    */
   onReady : function (callback) {
+    var self = this;
     if (!window.MathJax) {
       listeners.push(callback);
       window.MathJax = {
         AuthorInit: function () {
-          // NOTE: Make sure any further tasks are scheduled after MathJax
-          //       is fully configured and operational.
-          MathJax.Hub.Register.StartupHook("Begin", function () {
-            MeteorMathJax.ready();
-          });
+          MathJax.Hub.Config(self.defaultConfig);
+          MeteorMathJax.ready();
         }
       };
       // load the MathJax script
       $.getScript(this.sourceUrl);
-    } else if (window.MathJax.Hub && typeof window.MathJax.Hub.Configured === 'function') {
-      // it's already loaded ...
+    } else if (window.MathJax.Hub && typeof window.MathJax.Hub.queue) { // it's already loaded
       callback(window.MathJax);
     } else {
       listeners.push(callback);
     }
+  },
+  /**
+   * Default configuration which will be used as soon as MathJax is loaded.
+   * It can be overwritten by the user.
+   */
+  defaultConfig: {
+    skipStartupTypeset: true,
+    showProcessingMessages: false,
+    tex2jax: {
+      inlineMath: [['$','$'],['\\(','\\)']]
+    }
   }
 };
 
-MeteorMathJax.onReady(function (MathJax) {
-  MathJax.Hub.Config({
-    skipStartupTypeset: true,
-    showProcessingMessages: false,
-    tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] }
-  });
-});
-
+/**
+ * Creates an instance of MathJaxHelper, which is essentially a template generator.
+ * @param {Object} options
+ * @param {Boolean} options.useCache
+ */
 function MathJaxHelper (options) {
   this.cache = {};
   this.options = {
@@ -59,6 +73,12 @@ function MathJaxHelper (options) {
   };
 }
 
+/**
+ * Create a template that can be used as helper to Render
+ * MathJax content. A typical use would be:
+ *
+ * Template.registerHelper('mathjax', MathJaxHelper.getTemplate());
+ */
 MathJaxHelper.prototype.getTemplate = function getTemplate () {
 
   var options = this.options;
