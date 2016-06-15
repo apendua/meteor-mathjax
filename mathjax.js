@@ -26,7 +26,9 @@ MeteorMathJax = {
       listeners.push(callback);
       window.MathJax = {
         AuthorInit: function () {
-          MeteorMathJax.ready();
+          Meteor.defer(function () {
+            MeteorMathJax.ready();
+          });
         }
       };
       // load the MathJax script
@@ -50,13 +52,16 @@ MeteorMathJax.onReady(function (MathJax) {
 
 function MathJaxHelper (options) {
   this.cache = {};
-  this.options = options;
+  this.options = {
+    useCache: options.useCache !== undefined ? options.useCache : true,
+    deferred: options.deferred !== undefined ? options.deferred : true,
+  };
 }
 
 MathJaxHelper.prototype.getTemplate = function getTemplate () {
 
+  var options = this.options;
   var cache = this.cache;
-  var wait = this.options.wait !== undefined ? this.options.wait : false;
 
   var update = function (firstNode, lastNode) {
     var alreadyThere = false;
@@ -67,12 +72,14 @@ MathJaxHelper.prototype.getTemplate = function getTemplate () {
         alreadyThere = true;
       }
       if (alreadyThere && this.nodeType === 1) {
-        cacheKey = node.innerHTML;
-        if (cache[cacheKey]) {
+        cacheKey = options.useCache && node.innerHTML;
+        if (options.useCache && cache[cacheKey]) {
           node.innerHTML = cache[cacheKey];
         } else {
+          console.log('Typeset', this);
           MathJax.Hub.Queue(["Typeset", MathJax.Hub, this], function () {
-            cache[cacheKey] = node.innerHTML;
+            if (options.useCache)
+              cache[cacheKey] = node.innerHTML;
           });
         }
       }
@@ -97,8 +104,10 @@ MathJaxHelper.prototype.getTemplate = function getTemplate () {
     var self = this;
     //----------------------------------------
     MeteorMathJax.onReady(function (MathJax) {
-      if (!wait) {
-        Meteor.defer(function () { update(self.firstNode, self.lastNode); });
+      if (options.deferred) {
+        Meteor.defer(function () {
+          update(self.firstNode, self.lastNode);
+        });
       } else {
         update(self.firstNode, self.lastNode);
       }
