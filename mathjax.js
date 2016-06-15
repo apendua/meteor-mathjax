@@ -80,16 +80,20 @@ MathJaxHelper.prototype.getTemplate = function getTemplate () {
     });
   };
   
-  var mathjax = new Template('mathjax', function () {
+  var template = new Template('mathjax', function () {
     var view = this, content = '';
     if (view.templateContentBlock) {
-      content = HTML.toText(Blaze._expandView(Blaze._TemplateWith(Template.parentData(),
-        view.templateContentBlock.renderFunction)), HTML.TEXTMODE.STRING);
+      content = Blaze._toText(view.templateContentBlock, HTML.TEXTMODE.STRING);
     }
+    // NOTE: We can either return:
+    //
+    //       view.templateContentBlock
+    //       or HTML.Raw(content);
+    //
     return HTML.Raw(content);
   });
 
-  mathjax.onRendered(function () {
+  template.onRendered(function () {
     var self = this;
     //----------------------------------------
     MeteorMathJax.onReady(function (MathJax) {
@@ -101,6 +105,6 @@ MathJaxHelper.prototype.getTemplate = function getTemplate () {
     }); // ready
   });
 
-  return mathjax;
+  return template;
 };
 
