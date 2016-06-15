@@ -7,6 +7,7 @@ Package.describe({
 
 Package.onUse(function (api) {
   api.versionsFrom('0.9.1');
-  api.use(['templating'], 'client');
+  api.use(['templating', 'jquery'], 'client');
   api.addFiles('mathjax.js', 'client');
+  api.export('MeteorMathJax');
 });

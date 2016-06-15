@@ -1,5 +1,11 @@
 if (Meteor.isClient) {
 
+  var mathjax = new MeteorMathJax.Helper({
+    
+  });
+
+  Template.registerHelper('mathjax', mathjax.getTemplate());
+
   Session.set('index', 0);
 
   var equations = [
