@@ -84,15 +84,15 @@ MathJaxHelper.prototype.getTemplate = function getTemplate () {
   var options = this.options;
   var cache = this.cache;
 
-  var update = function (firstNode, lastNode) {
-    var alreadyThere = false;
+  var update = function (MathJax, firstNode, lastNode) {
+    var firstNodeReached = false;
     $(firstNode).parent().contents().each(function (index, node) {
       // TODO add support for text nodes
       var cacheKey;
       if (node === firstNode) {
-        alreadyThere = true;
+        firstNodeReached = true;
       }
-      if (alreadyThere && this.nodeType === 1) {
+      if (firstNodeReached && this.nodeType === 1) {
         cacheKey = options.useCache && node.innerHTML;
         if (options.useCache && cache[cacheKey]) {
           node.innerHTML = cache[cacheKey];
@@ -112,20 +112,21 @@ MathJaxHelper.prototype.getTemplate = function getTemplate () {
     if (view.templateContentBlock) {
       content = Blaze._toText(view.templateContentBlock, HTML.TEXTMODE.STRING);
     }
-    // NOTE: We can either return:
-    //
-    //       view.templateContentBlock
-    //       or HTML.Raw(content);
-    //
     return HTML.Raw(content);
+    
+    // NOTE: This should work too, but I am afraid of some side effects
+    //       related to the fact that Blaze would be managing these nodes
+    //       in it's own manners.
+    //
+    // return view.templateContentBlock;
   });
 
   template.onRendered(function () {
     var self = this;
     //----------------------------------------
     MeteorMathJax.onReady(function (MathJax) {
-      update(self.firstNode, self.lastNode);
-    }); // ready
+      update(MathJax, self.firstNode, self.lastNode);
+    });
   });
 
   return template;
