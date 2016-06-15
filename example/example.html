@@ -10,11 +10,16 @@
   <h1>Hello MathJax!</h1>
   <input type="button" value="Change equation" />
   {{#with myEquation="$$x^2+y^2=z^2$$"}}
-    {{#mathjax wait=true}}
+    {{#mathjax}}
+      {{> clickMe}}
       <p>{{myEquation}}</p>
       <p>{{equation}}</p>
     {{/mathjax}}
   {{/with}}
   <h2> ... and before applying MathJax</h2>
   <code>{{equation}}</code>
+</template>
+
+<template name="clickMe">
+  <button>click me</button>
 </template>
