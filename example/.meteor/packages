@@ -7,3 +7,5 @@ standard-app-packages
 autopublish
 insecure
 mrt:mathjax
+standard-minifier-css
+standard-minifier-js
