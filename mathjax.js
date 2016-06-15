@@ -26,7 +26,9 @@ MeteorMathJax = {
       listeners.push(callback);
       window.MathJax = {
         AuthorInit: function () {
-          Meteor.defer(function () {
+          // NOTE: Make sure any further tasks are scheduled after MathJax
+          //       is fully configured and operational.
+          MathJax.Hub.Register.StartupHook("Begin", function () {
             MeteorMathJax.ready();
           });
         }
