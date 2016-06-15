@@ -56,7 +56,6 @@ function MathJaxHelper (options) {
   this.cache = {};
   this.options = {
     useCache: options.useCache !== undefined ? options.useCache : true,
-    deferred: options.deferred !== undefined ? options.deferred : true,
   };
 }
 
@@ -78,7 +77,6 @@ MathJaxHelper.prototype.getTemplate = function getTemplate () {
         if (options.useCache && cache[cacheKey]) {
           node.innerHTML = cache[cacheKey];
         } else {
-          console.log('Typeset', this);
           MathJax.Hub.Queue(["Typeset", MathJax.Hub, this], function () {
             if (options.useCache)
               cache[cacheKey] = node.innerHTML;
@@ -106,13 +104,7 @@ MathJaxHelper.prototype.getTemplate = function getTemplate () {
     var self = this;
     //----------------------------------------
     MeteorMathJax.onReady(function (MathJax) {
-      if (options.deferred) {
-        Meteor.defer(function () {
-          update(self.firstNode, self.lastNode);
-        });
-      } else {
-        update(self.firstNode, self.lastNode);
-      }
+      update(self.firstNode, self.lastNode);
     }); // ready
   });
 
