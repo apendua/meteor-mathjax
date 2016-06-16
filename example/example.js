@@ -5,10 +5,10 @@ if (Meteor.isClient) {
   };
 
   var mathjax = new MeteorMathJax.Helper({
-    useCache: false
+    useCache: true
   });
 
-  Template.registerHelper('mathjaxNoCache', mathjax.getTemplate());
+  Template.registerHelper('mathjaxWithCache', mathjax.getTemplate());
 
   Session.set('index', 0);
 

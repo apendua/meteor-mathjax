@@ -11,14 +11,14 @@
   <input type="button" value="Change equation" />
   {{#with myEquation="$$x^2+y^2=z^2$$"}}
     <h2>With cache</h2>
-    {{#mathjax}}
+    {{#mathjaxWithCache}}
       <p>{{myEquation}}</p>
       <p>{{equation}}</p>
-    {{/mathjax}}
+    {{/mathjaxWithCache}}
     <h2>Without cache</h2>
-    {{#mathjaxNoCache}}
+    {{#mathjax}}
       <p>{{equation}}</p>
-    {{/mathjaxNoCache}}
+    {{/mathjax}}
   {{/with}}
   <h2> ... and before applying MathJax</h2>
   <code>{{equation}}</code>
