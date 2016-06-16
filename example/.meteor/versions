@@ -41,7 +41,7 @@ modules@0.6.2
 modules-runtime@0.6.4
 mongo@1.1.8
 mongo-id@1.0.5
-mrt:mathjax@0.6.3
+mrt:mathjax@0.7.0
 npm-mongo@1.4.44
 observe-sequence@1.0.12
 ordered-dict@1.0.8

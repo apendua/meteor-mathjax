@@ -1,6 +1,6 @@
 Package.describe({
   summary: "Render math formulas with mathjax",
-  version: "0.6.3",
+  version: "0.7.0",
   name: "mrt:mathjax",
   git: "https://github.com/apendua/meteor-mathjax.git"
 });
