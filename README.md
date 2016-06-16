@@ -7,9 +7,12 @@ as possible. Currently, the only relevant package dependency is `jquery`.
 
 ## Quick start
 
-To render equations, simply put them inside a `mathjax` block helper.
-Use single dollars `$...$` for inline math, and double dollars `$$...$$`
-for "display mode".
+To install the package in your meteor project run
+```
+meteor add mrt:markdown
+```
+
+To render equations put them inside a `mathjax` block helper.
 
 ```html
 {{#mathjax}}
@@ -27,6 +30,33 @@ for "display mode".
 {{/mathjax}}
 ```
 
+Use single dollars `$...$` for inline math, and double dollars `$$...$$`
+for "display mode".
+
+## Configuration
+
+Starting from version `0.7.0`, the package exports `MeteorMathJax` object
+which purpose is to allow custom `MathJax` configuration. You can overwrite
+any of the following values to get the results what you want.
+
+```javascript
+// NOTE: Below are the default values currently used by the package
+MeteorMathJax.sourceUrl = 'https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+MeteorMathJax.defaultConfig = {
+  skipStartupTypeset: true,
+  showProcessingMessages: false,
+  tex2jax: {
+    inlineMath: [['$','$'],['\\(','\\)']]
+  }  
+};
+```
+Please note that changing the `config` query parameter in `sourceUrl` will allow you to choose
+one from many possible pre-defined configuration files as described
+[here](http://docs.mathjax.org/en/latest/config-files.html).
+
+Setting `MeteorMathJax.sourceUrl` to `''` will prevent the package from
+loading `MathJax` automatically. This is useful if you want to load it manually.
+
 ## Limitations
 
 Please note that because of the way `MathJax` renders the equation, each equation
@@ -38,7 +68,8 @@ $$x^2+y^2=z^2$$
 {{/mathjax}}
 ```
 
-will not work as you expect. The formula source code will not be transformed by `MathJax`.
+will not work as you expect unless you use some kind of `markdown` (see [Advanced usage](#markdown)).
+The formula source code will not be transformed by `MathJax`.
 
 Another thing is that `mathjax` block helper mimics the behavior of the built-in
 `markdown` helper, i.e. everything that goes inside `mathjax` block helper
@@ -66,30 +97,6 @@ Because of the two limitations described above, you should probably not wrap
 a large part of your templates code within the `markdown` block. Instead, try
 to put it as close to the equations as possible.
 
-## Configuration
-
-Starting from version `0.7.0`, the package exports `MeteorMathJax` object
-which purpose is to allow custom `MathJax` configuration. You can overwrite
-any of the following values to get the results what you want.
-
-```javascript
-// NOTE: Below are the default values currently used by the package
-MeteorMathJax.sourceUrl = 'https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
-MeteorMathJax.defaultConfig = {
-  skipStartupTypeset: true,
-  showProcessingMessages: false,
-  tex2jax: {
-    inlineMath: [['$','$'],['\\(','\\)']]
-  }  
-};
-```
-Please note that changing the `config` query parameter in `sourceUrl` will allow you to choose
-one from many possible pre-defined configuration files as described
-[here](http://docs.mathjax.org/en/latest/config-files.html).
-
-Setting `MeteorMathJax.sourceUrl` to `''` will prevent the package from
-loading `MathJax` automatically. This is useful if you want to load it manually.
-
 ## Advanced usage
 
 By default, the `MathJax` source code is not loaded until the first usage
@@ -98,7 +105,7 @@ However, in some scenarios you may want to load this code in advance to ensure t
 no visible delay before the formulas get transformed.
 There are at least two ways to achieve this.
 
-### Force `MathJax` loading
+### Forcing `MathJax` to load
 
 The `MeteorMathJax` object exposes a `require` method. Calling this method
 will force the `MathJax` code to be loaded as soon as possible, e.g.
@@ -109,7 +116,7 @@ MeteorMathJax.require(function (MathJax) {
 });
 ```
 
-### Load `MathJax` manually
+### Loading `MathJax` manually
 
 In a manual mode, you will first need to tell the package not to download `MathJax` automatically.
 You can do it by using one of these methods:
@@ -126,7 +133,7 @@ Secondly, you will need to tell the package when `MathJax` is actually loaded by
 MeteorMathJax.ready();
 ```
 
-## Formulas caching
+## Caching formulas
 
 Caching formulas reduces the render time by saving the HTML rendered by `MathJax`
 in a form of text that can be reused later on when the same formula is being transformed.
@@ -137,7 +144,7 @@ to overwrite the default helper
 Template.registerHelper('mathjax', new MeteorMathJax.Helper({ useCache: true }).getTemplate());
 ```
 
-## Using with markdown
+## <a name="markdown"></a>Using with markdown
 
 Theoretically it is possible to use `mathjax` with `markdown` by nesting the helpers in each other:
 ```html
@@ -158,8 +165,7 @@ var helper = new MeteorMathJax.Helper({
     return converter.makeHtml(x);
   },
 });
-
-Template.registerHelper('mathjaxWithCache', helper.getTemplate());
+Template.registerHelper('mathjax', helper.getTemplate());
 ```
 
 
