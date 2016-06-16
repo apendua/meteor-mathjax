@@ -5,7 +5,7 @@ with [mathjax](http://www.mathjax.org/). The `MathJax` source code is loaded fro
 as soon as the first formula is being rendered, which makes the package as lightweight
 as possible. Currently, the only relevant package dependency is `jquery`.
 
-## Basic usage
+## Quick start
 
 To render equations, simply put them inside a `mathjax` block helper.
 Use single dollars `$...$` for inline math, and double dollars `$$...$$`
@@ -134,5 +134,32 @@ This is an experimental feature so it's not enabled by default. To enable it, yo
 to overwrite the default helper
 
 ```javascript
-Template.registerHelper('mathjax', new MeteorMathJax.Helper().getTemplate());
+Template.registerHelper('mathjax', new MeteorMathJax.Helper({ useCache: true }).getTemplate());
 ```
+
+## Using with markdown
+
+Theoretically it is possible to use `mathjax` with `markdown` by nesting the helpers in each other:
+```html
+{{#mathjax}}
+  {{#markdown}}
+$$x^2+y^2=z^2$$
+  {{/markdown}}
+{{/mathjax}}
+```
+Though, there's also a better way to do it. The `MeteorMathJax.Helper` constructor accepts
+a `transform` parameter, which allows you to apply any kind of transformation to the text
+before it's passed to `MathJax`. So for example you can do something like:
+
+```javascript
+var converter = new Showdown.converter();
+var helper = new MeteorMathJax.Helper({
+  transform : function (x) {
+    return converter.makeHtml(x);
+  },
+});
+
+Template.registerHelper('mathjaxWithCache', helper.getTemplate());
+```
+
+
