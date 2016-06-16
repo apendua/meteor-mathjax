@@ -1,5 +1,4 @@
 allow-deny@1.0.5
-autopublish@1.0.7
 autoupdate@1.2.10
 babel-compiler@6.8.0
 babel-runtime@0.1.9
@@ -27,11 +26,11 @@ html-tools@1.0.10
 htmljs@1.0.10
 http@1.1.6
 id-map@1.0.8
-insecure@1.0.7
 jquery@1.11.9
 launch-screen@1.0.12
 livedata@1.0.18
 logging@1.0.13
+markdown@1.0.10
 meteor@1.1.15
 meteor-platform@1.2.6
 minifier-css@1.1.12

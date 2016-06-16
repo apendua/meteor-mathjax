@@ -3,9 +3,12 @@ if (Meteor.isClient) {
   MeteorMathJax.defaultConfig.TeX = {
     extensions: ["cancel.js"]
   };
-
+  var converter = new Showdown.converter();
   var mathjax = new MeteorMathJax.Helper({
-    useCache: true
+    useCache  : true,
+    transform : function (x) {
+      return converter.makeHtml(x);
+    },
   });
 
   Template.registerHelper('mathjaxWithCache', mathjax.getTemplate());

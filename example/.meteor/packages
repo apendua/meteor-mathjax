@@ -4,8 +4,7 @@
 # but you can also edit it by hand.
 
 standard-app-packages
-autopublish
-insecure
-mrt:mathjax
+markdown
 standard-minifier-css
 standard-minifier-js
+mrt:mathjax

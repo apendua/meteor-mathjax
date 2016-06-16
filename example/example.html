@@ -12,8 +12,8 @@
   {{#with myEquation="$$x^2+y^2=z^2$$"}}
     <h2>With cache</h2>
     {{#mathjaxWithCache}}
-      <p>{{myEquation}}</p>
-      <p>{{equation}}</p>
+{{myEquation}}
+{{equation}}
     {{/mathjaxWithCache}}
     <h2>Without cache</h2>
     {{#mathjax}}
