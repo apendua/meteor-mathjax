@@ -30,7 +30,7 @@ MeteorMathJax = {
    * Call the given callback as soon as MathJax is loaded.
    * @param {Function} callback
    */
-  onReady : function (callback) {
+  require : function (callback) {
     var self = this;
     if (!window.MathJax) {
       listeners.push(callback);
@@ -124,7 +124,7 @@ MathJaxHelper.prototype.getTemplate = function getTemplate () {
   template.onRendered(function () {
     var self = this;
     //----------------------------------------
-    MeteorMathJax.onReady(function (MathJax) {
+    MeteorMathJax.require(function (MathJax) {
       update(MathJax, self.firstNode, self.lastNode);
     });
   });
