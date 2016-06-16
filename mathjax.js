@@ -32,7 +32,7 @@ MeteorMathJax = {
    */
   require : function (callback) {
     var self = this;
-    if (!window.MathJax) {
+    if (!window.MathJax && this.sourceUrl) {
       listeners.push(callback);
       window.MathJax = {
         AuthorInit: function () {
@@ -42,7 +42,7 @@ MeteorMathJax = {
       };
       // load the MathJax script
       $.getScript(this.sourceUrl);
-    } else if (window.MathJax.Hub && typeof window.MathJax.Hub.queue) { // it's already loaded
+    } else if (window.MathJax && window.MathJax.Hub && typeof window.MathJax.Hub.queue) { // it's already loaded
       callback(window.MathJax);
     } else {
       listeners.push(callback);
