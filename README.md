@@ -126,3 +126,13 @@ Secondly, you will need to tell the package when `MathJax` is actually loaded by
 MeteorMathJax.ready();
 ```
 
+## Formulas caching
+
+Caching formulas reduces the render time by saving the HTML rendered by `MathJax`
+in a form of text that can be reused later on when the same formula is being transformed.
+This is an experimental feature so it's not enabled by default. To enable it, you will need
+to overwrite the default helper
+
+```javascript
+Template.registerHelper('mathjax', new MeteorMathJax.Helper().getTemplate());
+```
