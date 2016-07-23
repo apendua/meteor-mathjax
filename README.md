@@ -9,7 +9,7 @@ as possible. Currently, the only relevant package dependency is `jquery`.
 
 To install the package in your meteor project run
 ```
-meteor add mrt:markdown
+meteor add mrt:mathjax
 ```
 
 To render equations put them inside a `mathjax` block helper.
