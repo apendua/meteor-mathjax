@@ -1,0 +1,27 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 5,
+    "sourceType": "script",
+    "ecmaFeatures": {
+    }
+  },
+  "rules": {
+    "semi": 2,
+    "no-undef": "error",
+    "no-unused-vars": "warn"
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "mocha": true
+  },
+  "globals": {
+    "Template": false,
+    "Blaze": false,
+    "HTML": false,
+    "Package": false,
+    "MeteorMathJax": false,
+    "Helper": false,
+    "$": false
+  }
+}
