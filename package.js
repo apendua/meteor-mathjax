@@ -8,8 +8,7 @@ Package.describe({
 Package.onUse(function (api) {
   api.versionsFrom('1.3');
   
-  api.use('templating', 'client', { week: true });
-  api.use('jquery', 'client');
+  api.use([ 'templating', 'blaze', 'htmljs', 'jquery' ], 'client');
   
   api.addFiles([
     'lib/_.js',
